@@ -1,0 +1,21 @@
+import pandas as pd
+data = pd.read_csv("Automobile.csv")
+data.head()
+
+data.fillna(data.mean(), inplace=True)
+
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+data_scaled = scaler.fit_transform(data[['numerical_column']])
+
+data.describe()
+data['column_name'].hist()
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.heatmap(data.corr(), anot=True )
+plt.show()
+
+sns.scatterplot(data['feature1'], data['feature2'])
+
