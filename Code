@@ -1,21 +1,52 @@
 import pandas as pd
-data = pd.read_csv("Automobile.csv")
-data.head()
-
-data.fillna(data.mean(), inplace=True)
-
 from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
-data_scaled = scaler.fit_transform(data[['numerical_column']])
-
-data.describe()
-data['column_name'].hist()
-
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-sns.heatmap(data.corr(), anot=True )
-plt.show()
+# Load the data
+data = pd.read_csv("Automobile.csv")
 
-sns.scatterplot(data['feature1'], data['feature2'])
+# Display the first few rows of the dataset
+print(data.head())
 
+# Fill missing values for numeric columns only
+numeric_columns = data.select_dtypes(include='number').columns
+data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
+
+# Scale a specific numerical column (ensure the column exists)
+if 'numerical_column' in data.columns:
+    scaler = MinMaxScaler()
+    data['numerical_column_scaled'] = scaler.fit_transform(data[['numerical_column']])
+else:
+    print("Column 'numerical_column' not found in the dataset.")
+
+# Display data description
+print(data.describe())
+
+# Plot histogram for a specific column (ensure the column exists)
+if 'column_name' in data.columns:
+    data['column_name'].hist()
+    plt.title("Histogram of column_name")
+    plt.xlabel("column_name")
+    plt.ylabel("Frequency")
+    plt.show()
+else:
+    print("Column 'column_name' not found in the dataset.")
+
+# Plot heatmap with correct annotation argument
+if not data.corr().empty:  # Ensure correlation matrix is not empty
+    sns.heatmap(data.corr(), annot=True, cmap="coolwarm")
+    plt.title("Correlation Heatmap")
+    plt.show()
+else:
+    print("Correlation matrix is empty. Heatmap cannot be plotted.")
+
+# Scatter plot with explicit x and y arguments (ensure the columns exist)
+if 'feature1' in data.columns and 'feature2' in data.columns:
+    sns.scatterplot(x=data['feature1'], y=data['feature2'])
+    plt.title("Scatter Plot of feature1 vs feature2")
+    plt.xlabel("feature1")
+    plt.ylabel("feature2")
+    plt.show()
+else:
+    print("Columns 'feature1' or 'feature2' not found in the dataset.")
